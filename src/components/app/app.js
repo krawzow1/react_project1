@@ -20,22 +20,35 @@ class App extends Component {
                 {name: 'Jim', salary: 3000, increase: false, id: 3}
             ]
         }
+        this.max_id = 4
     }
-    
-
-    deleteItem = (id) => {
+   
+    addItem = (name, salary) => {
         this.setState(({data}) => {
-            //const index = data.findIndex(item => item.id === id)
+            return { data: [...data, {name, salary, increase: false, id: this.max_id + 1}]}
+        })
+        this.max_id++
+        console.log(this.max_id)
+    }
+    deleteItem = (id) => {
 
+        this.setState(({data}) => {
+            //const index = data.findIndex(elem => elem.id === id); //также не нарушает иммутабельность
             return {
                 data: data.filter(item => item.id !== id)
+                
+                //data: data.slice(0, index).concat(data.slice(index + 1)) //также не нарушает иммутабельность
             }
         })
+
     }
     render() {
+        const lastItemId = this.state.data.length > 0 ? this.state.data.at(-1).id : 0;
         return (
             <div className="app">
-                    <AppInfo />
+                    <AppInfo 
+                        lastItemId = {lastItemId}
+                    />
         
         
                     <div className="search-panel">
@@ -46,8 +59,11 @@ class App extends Component {
                     <EmployersList 
                         data={this.state.data} 
                         onDelete={this.deleteItem}
+                       
                     />
-                    <EmployersAddForm />
+                    <EmployersAddForm 
+                         onAdd={this.addItem}
+                    />
                 </div>
         );
     }
